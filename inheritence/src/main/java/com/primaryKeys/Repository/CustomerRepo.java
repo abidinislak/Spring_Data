@@ -1,2 +1,7 @@
-package com.primaryKeys.Repository;public interface CustomerRepo {
+package com.primaryKeys.Repository;
+
+import com.primaryKeys.model.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 }

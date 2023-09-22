@@ -13,6 +13,8 @@ public class Product {
     private Long id;
 
 
+    private int quatity;
+
     private String name;
     @ManyToMany
     @JoinTable(name = "Product_category", joinColumns = @JoinColumn(name = "product_id"),
