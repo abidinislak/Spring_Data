@@ -16,6 +16,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @EnableJpaRepositories(basePackages = "com.primaryKeys.Repository.pan", entityManagerFactoryRef = "panEntityManagerFactory", transactionManagerRef = "panTransactionManager")
 
@@ -33,6 +34,7 @@ public class PanConfiguraion {
 
     @Primary
     @Bean
+    @ConfigurationProperties("spring.pan.datasource.hikari")
     public DataSource panDataSource(@Qualifier("panDataSourceProperties") DataSourceProperties panDataSourceProperties) {
         return panDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
@@ -42,10 +44,21 @@ public class PanConfiguraion {
     public LocalContainerEntityManagerFactoryBean panEntityManagerFactory(
             @Qualifier("panDataSource") DataSource panDataSource,
             EntityManagerFactoryBuilder builder) {
-        return builder.dataSource(panDataSource)
+
+
+        Properties properties = new Properties();
+//        properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+        LocalContainerEntityManagerFactoryBean efb = builder.dataSource(panDataSource)
                 .packages(Pan.class)
                 .persistenceUnit("pan")
                 .build();
+
+        efb.setJpaProperties(properties);
+        return efb;
+
+
     }
 
     @Primary
